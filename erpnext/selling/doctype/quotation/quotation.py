@@ -105,6 +105,9 @@ def _make_sales_order(source_name, target_doc=None, ignore_permissions=False):
 		target.run_method("set_missing_values")
 		target.run_method("calculate_taxes_and_totals")
 
+	def update_item(source, target, source_parent):
+		target.location = source.location
+
 	doclist = get_mapped_doc("Quotation", source_name, {
 			"Quotation": {
 				"doctype": "Sales Order",
@@ -116,7 +119,8 @@ def _make_sales_order(source_name, target_doc=None, ignore_permissions=False):
 				"doctype": "Sales Order Item",
 				"field_map": {
 					"parent": "prevdoc_docname"
-				}
+				},
+				"postprocess": update_item
 			},
 			"Sales Taxes and Charges": {
 				"doctype": "Sales Taxes and Charges",
